@@ -6,6 +6,14 @@ const Main = () => {
     const [isAlarmSet, setIsAlarmSet] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState('');
 
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCurrentTime(new Date());
+        }, 1000);
+        if (isAlarmSet && alarmTime === currentTime.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit' })) {
+            alert('Alarm ringing!');
+        }
+    }, []);
     const handleAlarmChange = (event) => {
         setAlarmTime(event.target.value);
     };
