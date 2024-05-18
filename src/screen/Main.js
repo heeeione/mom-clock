@@ -8,7 +8,8 @@ const Main = () => {
     const [isAlarmSet, setIsAlarmSet] = useState(false);
     const [phoneNumber, setPhoneNumber] = useState('');
     const [alarmTimes, setAlarmTimes] = useState([]);
-    const [play] = useSound(alarm_sound)
+    const [isAlarmRinging, setIsAlarmRinging] = useState(false);
+    const [play, { stop }] = useSound(alarm_sound);
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -23,13 +24,15 @@ const Main = () => {
             hour: '2-digit',
             minute: '2-digit'
         });
-        //오후 02:21, ['14:22']
-        if (isAlarmSet && alarmTimes.includes(currentTimeString)) {
-            play()
-            alert('알람이 울립니다!');
-            setAlarmTimes(alarmTimes.filter(time => time !== currentTimeString));
+
+        const activeAlarm = alarmTimes.find(alarm => alarm.time === currentTimeString && alarm.active);
+        if (activeAlarm) {
+            play();
+            setIsAlarmRinging(true);
+            handleToggleAlarm(activeAlarm.idx);
+            // activeAlarm.active = false;
         }
-    }, [currentTime, isAlarmSet, alarmTimes]);
+    }, [alarmTimes, currentTime, play]);
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setAlarmTime(event.target.value);
@@ -44,10 +47,21 @@ const Main = () => {
             hour: '2-digit',
             minute: '2-digit'
         });
-        setAlarmTimes([...alarmTimes, formattedAlarmTime]);
+        setAlarmTimes([...alarmTimes, { time: formattedAlarmTime, active: true, idx: alarmTimes.length }]);
         setIsAlarmSet(true);
         alert(`알람이 설정되었습니다: ${formattedAlarmTime}`);
         setAlarmTime('');
+    };
+    const handleToggleAlarm = (index) => {
+        const updatedAlarmTimes = alarmTimes.map((alarm, i) =>
+            i === index ? { ...alarm, active: !alarm.active } : alarm
+        );
+        setAlarmTimes(updatedAlarmTimes);
+    };
+
+    const stopAlarm = () => {
+        stop();
+        setIsAlarmRinging(false);
     };
 
     return (
@@ -74,10 +88,20 @@ const Main = () => {
             <h2>Current Time: {currentTime.toLocaleTimeString()}</h2>
             <h3>설정된 알람 시간:</h3>
             <ul>
-                {alarmTimes.map((time, index) => (
-                    <li key={index}>{time}</li>
+                {alarmTimes.map((alarm, index) => (
+                    <li key={index}>
+                        {alarm.time} - {alarm.active ? 'Active' : 'Inactive'}
+                        <button onClick={() => handleToggleAlarm(index)} style={styles.toggleButton}>
+                            {alarm.active ? 'Deactivate' : 'Activate'}
+                        </button>
+                    </li>
                 ))}
             </ul>
+            {isAlarmRinging && (
+                <div>
+                    <button onClick={stopAlarm} style={styles.stopButton}>Stop Alarm</button>
+                </div>
+            )}
         </div>
     );
 };
@@ -106,7 +130,20 @@ const styles = {
         fontSize: '16px',
         cursor: 'pointer',
     },
+    toggleButton: {
+        marginLeft: '10px',
+        padding: '5px 10px',
+        fontSize: '14px',
+        cursor: 'pointer',
+    },
+    stopButton: {
+        marginTop: '20px',
+        padding: '10px 20px',
+        fontSize: '16px',
+        cursor: 'pointer',
+    },
 };
+
 
 
 export default Main;
