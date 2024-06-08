@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import alarm_sound from "../assets/iphone_alarm.mp3"
 import useSound from 'use-sound';
+import axios from "axios";
 
 const Main = () => {
     const [alarmTime, setAlarmTime] = useState('');
@@ -31,10 +32,15 @@ const Main = () => {
             setIsAlarmRinging(true);
             handleToggleAlarm(activeAlarm.idx);
             // activeAlarm.active = false;
+            if (phoneNumber) {
+                setTimeout(() => {
+                    sendSMS(phoneNumber, `Your alarm set for ${currentTimeString} is ringing!`);
+                }, 1000); //300000
+            }
         }
     }, [alarmTimes, currentTime, play]);
 
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (event) => {
         setAlarmTime(event.target.value);
     };
 
@@ -51,6 +57,16 @@ const Main = () => {
         setIsAlarmSet(true);
         alert(`알람이 설정되었습니다: ${formattedAlarmTime}`);
         setAlarmTime('');
+    };
+    const sendSMS = (to, message) => {
+        axios.post('http://localhost:3001/send-sms', {
+            phoneNumber: to,
+            message: message
+        }).then(response => {
+            console.log('SMS sent:', response.data);
+        }).catch(error => {
+            console.error('Error sending SMS:', error);
+        });
     };
     const handleToggleAlarm = (index) => {
         const updatedAlarmTimes = alarmTimes.map((alarm, i) =>
@@ -106,7 +122,7 @@ const Main = () => {
     );
 };
 
-const styles = {
+const styles= {
     container: {
         display: 'flex',
         flexDirection: 'column',
