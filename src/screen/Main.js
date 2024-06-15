@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import alarm_sound from '../assets/iphone_alarm.mp3';
 import useSound from 'use-sound';
 import AlarmList from '../Components/AlarmList';
@@ -7,7 +7,7 @@ import AddAlarm from '../Components/AddAlarm';
 const Main = () => {
   const [play, { stop }] = useSound(alarm_sound);
   const [openAlarmModal, setOpenAlarmModal] = React.useState(false);
-  const [alarmTimes, setAlarmTimes] = useState([]);
+  const [alarmTimes, setAlarmTimes] = React.useState([]);
   const handleAlarmModal = () => setOpenAlarmModal(true);
   const handleClose = () => setOpenAlarmModal(false);
   const handleSaveAlarm = (time) => {
