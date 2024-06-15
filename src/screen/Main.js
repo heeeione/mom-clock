@@ -10,15 +10,16 @@ const Main = () => {
   const [alarmTimes, setAlarmTimes] = React.useState([]);
   const handleAlarmModal = () => setOpenAlarmModal(true);
   const handleClose = () => setOpenAlarmModal(false);
+
   const handleSaveAlarm = (time) => {
     const formattedAlarmTime = new Date(`1970-01-01T${time}:00`).toLocaleTimeString('ko-KR', {
       hour: '2-digit',
       minute: '2-digit'
     });
     setAlarmTimes([...alarmTimes, { time: formattedAlarmTime, active: true, idx: alarmTimes.length }]);
+    setOpenAlarmModal(false);
   };
 
-  // 알람 리스트에는 저장된 알람을 불러와야 함
   return (<React.Fragment>
     <h1>알람</h1>
     <button onClick={handleAlarmModal}>+</button>
