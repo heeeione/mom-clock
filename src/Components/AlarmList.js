@@ -1,6 +1,7 @@
 import React from 'react';
 import { Switch } from '@mui/material';
 
+
 const AlarmList = ({ alarmTimes, setAlarmTimes }) => {
   const handleToggleAlarm = (index) => {
     const updatedAlarmTimes = alarmTimes.map((alarm, i) => i === index ? { ...alarm, active: !alarm.active } : alarm);

@@ -1,4 +1,5 @@
-import { Box, Modal, Typography, TextField, Button } from '@mui/material';
+import { Box, Modal, Typography, TextField, Button, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import React from 'react';
 
 const style = {
@@ -28,9 +29,14 @@ const AddAlarm = ({ open, onClose, onSave }) => {
   return (<React.Fragment>
       <Modal open={open} onClose={onClose}>
         <Box sx={style}>
-          <Typography variant="h6" component="h2">
-            Set Alarm
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Typography variant="h6" component="h2">
+              Set Alarm
+            </Typography>
+            <IconButton onClick={onClose}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
           <TextField
             label="Alarm Time"
             type="time"
