@@ -37,9 +37,11 @@ const AddAlarm = ({ open, onClose, onSave }) => {
               shrink: true
             }}
           />
-          <Button variant="contained" color="primary" onClick={handleSave}>
-            Save
-          </Button>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <Button variant="contained" color="primary" onClick={handleSave}>
+              Save
+            </Button>
+        </Box>
         </Box>
       </Modal>
     </React.Fragment>

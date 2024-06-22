@@ -17,6 +17,9 @@ const style = {
 const DetailAlarm = ({ open, onClose, alarm, onSave, onRemove }) => {
   const [editedTime, setEditedTime] = React.useState(alarm?.time);
 
+  React.useEffect(()=>{
+    if (alarm) {setEditedTime(alarm.time);}
+  },[alarm])
   const handleTimeChange = (event) => setEditedTime(event.target.value);
   const handleSave = () => {
     const formattedAlarmTime = new Date(`1970-01-01T${editedTime}:00`).toLocaleTimeString('ko-KR', {
@@ -26,6 +29,7 @@ const DetailAlarm = ({ open, onClose, alarm, onSave, onRemove }) => {
     onSave({ ...alarm, time: formattedAlarmTime });
   };
   const handleRemove = () => onRemove(alarm.idx);
+  console.log(editedTime)
   return (<Modal open={open} onClose={onClose}>
     <Box sx={style}>
       <Typography variant="h6" component="h2">
