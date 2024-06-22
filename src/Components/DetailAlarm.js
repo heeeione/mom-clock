@@ -1,6 +1,5 @@
-import { Box, Modal, TextField, Typography, Button } from '@mui/material';
+import { Box, Modal, Typography, TextField, Button } from '@mui/material';
 import React from 'react';
-
 
 const style = {
   position: 'absolute',
@@ -14,44 +13,57 @@ const style = {
   p: 4
 };
 
-const DetailAlarm = ({ open, onClose, alarm, onSave, onRemove }) => {
-  const [editedTime, setEditedTime] = React.useState(alarm?.time);
+const DetailAlarm = ({ open, onClose, alarm, onSave, onDelete }) => {
+  const [time, setTime] = React.useState(alarm ? alarm.time : '');
 
-  React.useEffect(()=>{
-    if (alarm) {setEditedTime(alarm.time);}
-  },[alarm])
-  const handleTimeChange = (event) => setEditedTime(event.target.value);
+  React.useEffect(() => {
+    if (alarm) {
+      setTime(alarm.time);
+    }
+  }, [alarm]);
+
   const handleSave = () => {
-    const formattedAlarmTime = new Date(`1970-01-01T${editedTime}:00`).toLocaleTimeString('ko-KR', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-    onSave({ ...alarm, time: formattedAlarmTime });
+    if (alarm) {
+      onSave({ ...alarm, time });
+      onClose();
+    }
   };
-  const handleRemove = () => onRemove(alarm.idx);
-  console.log(editedTime)
-  return (<Modal open={open} onClose={onClose}>
-    <Box sx={style}>
-      <Typography variant="h6" component="h2">
-        알람 상세 정보
-      </Typography>
-      <TextField
-        label="알람 시간"
-        type="time"
-        value={editedTime}
-        onChange={handleTimeChange}
-        fullWidth
-        sx={{ mt: 2 }} />
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-        <Button variant="contained" color="primary" onClick={handleSave}>
-          저장
-        </Button>
-        <Button variant="contained" color="secondary" onClick={handleRemove}>
-          삭제
-        </Button>
+
+  const handleDelete = () => {
+    if (alarm) {
+      onDelete(alarm.idx);
+      onClose();
+    }
+  };
+
+  return (
+    <Modal open={open} onClose={onClose}>
+      <Box sx={style}>
+        <Typography variant="h6" component="h2">
+          Edit Alarm
+        </Typography>
+        <TextField
+          label="Alarm Time"
+          type="time"
+          value={time}
+          onChange={(e) => setTime(e.target.value)}
+          fullWidth
+          margin="normal"
+          InputLabelProps={{
+            shrink: true
+          }}
+        />
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+          <Button variant="contained" color="secondary" onClick={handleDelete}>
+            Delete
+          </Button>
+          <Button variant="contained" color="primary" onClick={handleSave}>
+            Save
+          </Button>
+        </Box>
       </Box>
-    </Box>
-  </Modal>);
+    </Modal>
+  );
 };
 
 export default DetailAlarm;
