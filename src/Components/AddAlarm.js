@@ -15,6 +15,7 @@ const style = {
 };
 const AddAlarm = ({ open, onClose, onSave }) => {
   const [time, setTime] = React.useState(getCurrentTime());
+  const [phoneNumber, setPhoneNumber] = React.useState('');
   function getCurrentTime() {
     const now = new Date();
     const hours = now.getHours().toString().padStart(2, '0');
@@ -22,7 +23,7 @@ const AddAlarm = ({ open, onClose, onSave }) => {
     return `${hours}:${minutes}`
   }
   const handleSave = () => {
-    onSave(time);
+    onSave(time, phoneNumber);
     onClose();
   };
 
@@ -42,6 +43,17 @@ const AddAlarm = ({ open, onClose, onSave }) => {
             type="time"
             value={time}
             onChange={(e) => setTime(e.target.value)}
+            fullWidth
+            margin="normal"
+            InputLabelProps={{
+              shrink: true
+            }}
+          />
+          <TextField
+            label="Phone Number"
+            type="tel"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
             fullWidth
             margin="normal"
             InputLabelProps={{
