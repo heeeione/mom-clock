@@ -1,4 +1,5 @@
-import { Box, Modal, Typography, TextField, Button } from '@mui/material';
+import { Box, Modal, Typography, TextField, Button, IconButton } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 import React from 'react';
 
 const style = {
@@ -13,8 +14,13 @@ const style = {
   p: 4
 };
 const AddAlarm = ({ open, onClose, onSave }) => {
-  const [time, setTime] = React.useState('');
-
+  const [time, setTime] = React.useState(getCurrentTime());
+  function getCurrentTime() {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`
+  }
   const handleSave = () => {
     onSave(time);
     onClose();
@@ -23,9 +29,14 @@ const AddAlarm = ({ open, onClose, onSave }) => {
   return (<React.Fragment>
       <Modal open={open} onClose={onClose}>
         <Box sx={style}>
-          <Typography variant="h6" component="h2">
-            Set Alarm
-          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Typography variant="h6" component="h2">
+              Set Alarm
+            </Typography>
+            <IconButton onClick={onClose}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
           <TextField
             label="Alarm Time"
             type="time"
@@ -37,9 +48,11 @@ const AddAlarm = ({ open, onClose, onSave }) => {
               shrink: true
             }}
           />
-          <Button variant="contained" color="primary" onClick={handleSave}>
-            Save
-          </Button>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <Button variant="contained" color="primary" onClick={handleSave}>
+              Save
+            </Button>
+        </Box>
         </Box>
       </Modal>
     </React.Fragment>
