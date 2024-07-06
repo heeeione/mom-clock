@@ -32,7 +32,6 @@ const Main = () => {
               // 최신 상태 값을 가져오기 위해 함수형 업데이트 사용
               setOpenRingModal(currentOpenRingModal => {
                 if (currentOpenRingModal) {
-                  console.log('Hi');
                   sendSMS(formatPhoneNumber(alarm.phoneNumber), "지각이에요!!!")
                     .then(response => {
                       alert("문자가 전송되었습니다!")
