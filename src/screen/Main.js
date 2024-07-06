@@ -4,6 +4,8 @@ import useSound from 'use-sound';
 import AlarmList from '../Components/AlarmList';
 import AddAlarm from '../Components/AddAlarm';
 import AlarmModal from '../Components/AlarmModal';
+import { sendSMS } from '../axios/sms';
+import formatPhoneNumber from '../utils/formatPhoneNumber';
 
 const Main = () => {
   const [play, { stop }] = useSound(alarm_sound);
@@ -26,15 +28,24 @@ const Main = () => {
             play();
             setRingingAlarm(alarm);
             setOpenRingModal(true);
-            console.log(alarm.phoneNumber)
-            // 5분 후 알람이 종료되지 않은 경우 SMS 전송
             setTimeout(() => {
-              if (openRingModal) {
-                sendSMS(alarm.phoneNumber);
-              }
-            }, 300000); // 5분 = 300000 ms
+              // 최신 상태 값을 가져오기 위해 함수형 업데이트 사용
+              setOpenRingModal(currentOpenRingModal => {
+                if (currentOpenRingModal) {
+                  console.log('Hi');
+                  sendSMS(formatPhoneNumber(alarm.phoneNumber), "지각이에요!!!")
+                    .then(response => {
+                      alert("문자가 전송되었습니다!")
+                    })
+                    .catch(error => {
+                      alert("에러 발생!")
+                    });
+                }
+                return currentOpenRingModal;
+              });
+            }, 10000);
 
-            return { ...alarm, active: false }; // 알람을 비활성화
+            return { ...alarm, active: false };
           }
           return alarm;
         })
@@ -60,7 +71,6 @@ const Main = () => {
     setOpenAlarmModal(false);
   };
 
-  const sendSMS = (phoneNumber) => {}
   return (
     <React.Fragment>
     <h1>알람</h1>
