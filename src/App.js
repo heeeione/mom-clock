@@ -1,4 +1,4 @@
-import Main from './screen/Main'
+import Main from './page/Main'
 const App = () => {
   return (
     <Main />
