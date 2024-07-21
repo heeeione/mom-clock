@@ -1,6 +1,6 @@
 import React from 'react';
-import { Switch } from '@mui/material';
-
+import { List, ListItem, ListItemText, Switch, IconButton } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const AlarmList = ({ alarmTimes, setAlarmTimes }) => {
   const handleToggleAlarm = (index) => {
@@ -14,19 +14,22 @@ const AlarmList = ({ alarmTimes, setAlarmTimes }) => {
   };
 
   return (
-    <React.Fragment>
-      <ul>
-        {alarmTimes.map((alarm, index) => (<li key={index}>
-          {alarm.time}
+    <List>
+      {alarmTimes.map((alarm, index) => (
+        <ListItem key={index} secondaryAction={
+          <IconButton edge="end" aria-label="delete" onClick={() => handleRemoveAlarm(index)}>
+            <DeleteIcon />
+          </IconButton>
+        }>
+          <ListItemText primary={alarm.time} />
           <Switch
             checked={alarm.active}
             onChange={() => handleToggleAlarm(index)}
             inputProps={{ 'aria-label': 'controlled' }}
           />
-          <button onClick={()=>handleRemoveAlarm(index)}>Remove</button>
-        </li>))}
-      </ul>
-    </React.Fragment>
+        </ListItem>
+      ))}
+    </List>
   );
 };
 
