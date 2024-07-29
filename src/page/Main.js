@@ -14,13 +14,36 @@ const Main = () => {
   const [openRingModal, setOpenRingModal] = React.useState(false);
   const [alarmTimes, setAlarmTimes] = React.useState([]);
   const [ringingAlarm, setRingingAlarm] = React.useState(null);
+  const [currentTime, setCurrentTime] = React.useState('');
+
+  const getCurrentTime24Format = () => {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  };
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      const formattedTime = now.toLocaleTimeString('ko-KR', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+      setCurrentTime(formattedTime);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   React.useEffect(() => {
     const checkAlarms = () => {
       const now = new Date();
       const currentTime = now.toLocaleTimeString('ko-KR', {
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
+        hour12: true
       });
 
       setAlarmTimes(prevAlarmTimes =>
@@ -65,7 +88,8 @@ const Main = () => {
   const handleSaveAlarm = (time, phoneNumber) => {
     const formattedAlarmTime = new Date(`1970-01-01T${time}:00`).toLocaleTimeString('ko-KR', {
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      hour12: true
     });
     setAlarmTimes([...alarmTimes, { time: formattedAlarmTime, phoneNumber, active: true, idx: alarmTimes.length }]);
     setOpenAlarmModal(false);
@@ -83,12 +107,12 @@ const Main = () => {
       }}
     >
       <Typography variant="h4" gutterBottom>
-        알람
+        {currentTime}
       </Typography>
       <Button variant="contained" color="primary" onClick={handleAlarmModal}>
-        Add Alarm
+        + New Alarm
       </Button>
-      <AddAlarm open={openAlarmModal} onClose={handleClose} onSave={handleSaveAlarm} />
+      <AddAlarm open={openAlarmModal} onClose={handleClose} onSave={handleSaveAlarm} currentTime={getCurrentTime24Format()} />
       <AlarmList alarmTimes={alarmTimes} setAlarmTimes={setAlarmTimes} />
       <AlarmModal open={openRingModal} onClose={handleRingModalClose} />
     </Container>

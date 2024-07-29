@@ -14,16 +14,15 @@ const style = {
   p: 4
 };
 
-const AddAlarm = ({ open, onClose, onSave }) => {
-  const [time, setTime] = React.useState(getCurrentTime());
+const AddAlarm = ({ open, onClose, onSave, currentTime }) => {
+  const [time, setTime] = React.useState('');
   const [phoneNumber, setPhoneNumber] = React.useState('');
 
-  function getCurrentTime() {
-    const now = new Date();
-    const hours = now.getHours().toString().padStart(2, '0');
-    const minutes = now.getMinutes().toString().padStart(2, '0');
-    return `${hours}:${minutes}`;
-  }
+  React.useEffect(() => {
+    if (open) {
+      setTime(currentTime);
+    }
+  }, [open]);
 
   const handleSave = () => {
     onSave(time, phoneNumber);
