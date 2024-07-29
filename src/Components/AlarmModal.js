@@ -17,10 +17,10 @@ const AlarmModal = ({ open, onClose }) => {
   return (
     <Modal open={open} onClose={onClose}>
       <Box sx={style}>
-        <Typography variant="h6" component="h2">
+        <Typography variant="h6" component="h2" color="#000">
           알람
         </Typography>
-        <Typography variant="body1" sx={{ mt: 2 }}>
+        <Typography variant="body1" sx={{ mt: 2 }} color="#000">
           알람이 울리고 있습니다!
         </Typography>
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>

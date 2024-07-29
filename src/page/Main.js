@@ -1,6 +1,7 @@
 import React from 'react';
-import alarm_sound from '../assets/iphone_alarm.mp3';
 import useSound from 'use-sound';
+import { Container, Typography, Button, Box } from '@mui/material';
+import alarm_sound from '../assets/iphone_alarm.mp3';
 import AlarmList from '../Components/AlarmList';
 import AddAlarm from '../Components/AddAlarm';
 import AlarmModal from '../Components/AlarmModal';
@@ -13,13 +14,36 @@ const Main = () => {
   const [openRingModal, setOpenRingModal] = React.useState(false);
   const [alarmTimes, setAlarmTimes] = React.useState([]);
   const [ringingAlarm, setRingingAlarm] = React.useState(null);
+  const [currentTime, setCurrentTime] = React.useState('');
+
+  const getCurrentTime24Format = () => {
+    const now = new Date();
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    return `${hours}:${minutes}`;
+  };
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      const formattedTime = now.toLocaleTimeString('ko-KR', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      });
+      setCurrentTime(formattedTime);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
 
   React.useEffect(() => {
     const checkAlarms = () => {
       const now = new Date();
       const currentTime = now.toLocaleTimeString('ko-KR', {
         hour: '2-digit',
-        minute: '2-digit'
+        minute: '2-digit',
+        hour12: true
       });
 
       setAlarmTimes(prevAlarmTimes =>
@@ -29,15 +53,14 @@ const Main = () => {
             setRingingAlarm(alarm);
             setOpenRingModal(true);
             setTimeout(() => {
-              // 최신 상태 값을 가져오기 위해 함수형 업데이트 사용
               setOpenRingModal(currentOpenRingModal => {
                 if (currentOpenRingModal) {
                   sendSMS(formatPhoneNumber(alarm.phoneNumber), "지각이에요!!!")
                     .then(response => {
-                      alert("문자가 전송되었습니다!")
+                      alert("문자가 전송되었습니다!");
                     })
                     .catch(error => {
-                      alert("에러 발생!")
+                      alert("에러 발생!");
                     });
                 }
                 return currentOpenRingModal;
@@ -55,6 +78,7 @@ const Main = () => {
 
     return () => clearInterval(interval);
   }, [play, openRingModal]);
+
   const handleAlarmModal = () => setOpenAlarmModal(true);
   const handleClose = () => setOpenAlarmModal(false);
   const handleRingModalClose = () => {
@@ -64,19 +88,35 @@ const Main = () => {
   const handleSaveAlarm = (time, phoneNumber) => {
     const formattedAlarmTime = new Date(`1970-01-01T${time}:00`).toLocaleTimeString('ko-KR', {
       hour: '2-digit',
-      minute: '2-digit'
+      minute: '2-digit',
+      hour12: true
     });
     setAlarmTimes([...alarmTimes, { time: formattedAlarmTime, phoneNumber, active: true, idx: alarmTimes.length }]);
     setOpenAlarmModal(false);
   };
 
   return (
-    <React.Fragment>
-    <h1>알람</h1>
-    <button onClick={handleAlarmModal}>+</button>
-    <AddAlarm open={openAlarmModal} onClose={handleClose} onSave={handleSaveAlarm} />
-    <AlarmList alarmTimes={alarmTimes} setAlarmTimes={setAlarmTimes} />
-    <AlarmModal open={openRingModal} onClose={handleRingModalClose} />
-  </React.Fragment>);
+    <Container
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        minHeight: '100vh',
+        backgroundColor: '#293038'
+      }}
+    >
+      <Typography variant="h4" gutterBottom>
+        {currentTime}
+      </Typography>
+      <Button variant="contained" color="primary" onClick={handleAlarmModal}>
+        + New Alarm
+      </Button>
+      <AddAlarm open={openAlarmModal} onClose={handleClose} onSave={handleSaveAlarm} currentTime={getCurrentTime24Format()} />
+      <AlarmList alarmTimes={alarmTimes} setAlarmTimes={setAlarmTimes} />
+      <AlarmModal open={openRingModal} onClose={handleRingModalClose} />
+    </Container>
+  );
 };
+
 export default Main;
