@@ -4,7 +4,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 
 const AlarmList = ({ alarmTimes, setAlarmTimes }) => {
   const handleToggleAlarm = (index) => {
-    const updatedAlarmTimes = alarmTimes.map((alarm, i) => i === index ? { ...alarm, active: !alarm.active } : alarm);
+    const updatedAlarmTimes = alarmTimes.map((alarm, i) =>
+      i === index ? { ...alarm, active: !alarm.active } : alarm
+    );
     setAlarmTimes(updatedAlarmTimes);
   };
 
@@ -16,11 +18,14 @@ const AlarmList = ({ alarmTimes, setAlarmTimes }) => {
   return (
     <List>
       {alarmTimes.map((alarm, index) => (
-        <ListItem key={index} secondaryAction={
-          <IconButton edge="end" aria-label="delete" onClick={() => handleRemoveAlarm(index)}>
-            <DeleteIcon />
-          </IconButton>
-        }>
+        <ListItem
+          key={index}
+          secondaryAction={
+            <IconButton edge="end" aria-label="delete" onClick={() => handleRemoveAlarm(index)}>
+              <DeleteIcon sx={{ color: 'white' }} />
+            </IconButton>
+          }
+        >
           <ListItemText primary={alarm.time} />
           <Switch
             checked={alarm.active}
